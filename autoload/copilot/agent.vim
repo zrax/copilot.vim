@@ -495,7 +495,7 @@ function! copilot#agent#EditorInfo() abort
     if has('nvim')
       let s:editor_version = matchstr(execute('version'), 'NVIM v\zs[^[:space:]]\+')
     else
-      let s:editor_version = (v:version / 100) . '.' . (v:version % 100) . (exists('v:versionlong') ? printf('.%04d', v:versionlong % 1000) : '')
+      let s:editor_version = (v:version / 100) . '.' . (v:version % 100) . (exists('v:versionlong') ? printf('.%04d', v:versionlong % 10000) : '')
     endif
   endif
   return {'name': has('nvim') ? 'Neovim': 'Vim', 'version': s:editor_version}
@@ -557,7 +557,6 @@ function! s:AgentStartupError() dict abort
 endfunction
 
 function! s:StatusNotification(params, agent) abort
-  call copilot#logger#Info('StatusNotification ' . string(a:params))
   let a:agent.status = a:params
 endfunction
 

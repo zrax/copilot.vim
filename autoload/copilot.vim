@@ -187,7 +187,6 @@ endfunction
 function! copilot#Enabled() abort
   return get(g:, 'copilot_enabled', 1)
         \ && empty(s:BufferDisabled())
-        \ && empty(copilot#Agent().StartupError())
 endfunction
 
 function! copilot#Complete(...) abort
@@ -362,7 +361,7 @@ function! s:UpdatePreview() abort
       endif
       let data.hl_mode = 'combine'
       call nvim_buf_set_extmark(0, copilot#NvimNs(), line('.')-1, col('.')-1, data)
-    else
+    elseif s:has_vim_ghost_text
       call prop_add(line('.'), col('.'), {'type': s:hlgroup, 'text': text[0]})
       for line in text[1:]
         call prop_add(line('.'), 0, {'type': s:hlgroup, 'text_align': 'below', 'text': line})
@@ -412,7 +411,7 @@ function! s:Trigger(bufnr, timer) abort
 endfunction
 
 function! copilot#Schedule(...) abort
-  if !s:has_ghost_text || !copilot#Enabled()
+  if !s:has_ghost_text || !s:Running() || !copilot#Enabled()
     call copilot#Clear()
     return
   endif
