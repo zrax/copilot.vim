@@ -26,7 +26,7 @@ function! s:Render(state) abort
   endif
   let leads = {}
   for item in sorted
-    let insert = split(item.insertText, "\n", 1)
+    let insert = split(item.insertText, "\r\n\\=\\|\n", 1)
     let insert[0] = strpart(a:state.line, 0, copilot#util#UTF16ToByteIdx(a:state.line, item.range.start.character)) . insert[0]
     let lines += [s:separator] + insert
     if !has_key(leads, string(item.range.start))

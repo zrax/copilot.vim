@@ -46,11 +46,7 @@ function! s:Start() abort
   if s:Running()
     return
   endif
-  let s:agent = copilot#agent#New({'methods': {
-        \ 'PanelSolution': function('copilot#panel#Solution'),
-        \ 'PanelSolutionsDone': function('copilot#panel#SolutionsDone'),
-        \ },
-        \ 'editorConfiguration' : s:EditorConfiguration()})
+  let s:agent = copilot#agent#New({'editorConfiguration' : s:EditorConfiguration()})
 endfunction
 
 function! s:Stop() abort
@@ -176,8 +172,8 @@ function! copilot#Enabled() abort
         \ && empty(s:BufferDisabled())
 endfunction
 
-let s:inline_invoked = 0
 let s:inline_automatic = 1
+let s:inline_invoked = 2
 
 function! copilot#Complete(...) abort
   if exists('g:_copilot_timer')
@@ -330,7 +326,7 @@ endfunction
 function! s:UpdatePreview() abort
   try
     let [text, outdent, delete, item] = s:SuggestionTextWithAdjustments()
-    let text = split(text, "\n", 1)
+    let text = split(text, "\r\n\\=\\|\n", 1)
     if empty(text[-1])
       call remove(text, -1)
     endif

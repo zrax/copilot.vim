@@ -297,7 +297,9 @@ function! s:DispatchMessage(agent, method, handler, id, params, ...) abort
   if a:id isnot# v:null
     call s:Send(a:agent, extend({'id': a:id}, response))
   endif
-  return response
+  if !has_key(s:notifications, a:method)
+    return response
+  endif
 endfunction
 
 function! s:OnMessage(agent, body, ...) abort
@@ -586,7 +588,7 @@ function! s:Progress(params, agent) abort
   endif
 endfunction
 
-let s:common_handlers = {
+let s:notifications = {
       \ '$/progress': function('s:Progress'),
       \ 'featureFlagsNotification': function('s:Nop'),
       \ 'statusNotification': function('s:StatusNotification'),
@@ -618,7 +620,7 @@ function! copilot#agent#New(...) abort
         \ 'Cancel': function('s:AgentCancel'),
         \ 'StartupError': function('s:AgentStartupError'),
         \ }
-  let instance.methods = extend(copy(s:common_handlers), get(opts, 'methods', {}))
+  let instance.methods = copy(s:notifications)
   let [command, node_version, command_error] = s:Command()
   if len(command_error)
     if empty(command)
