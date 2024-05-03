@@ -15,7 +15,7 @@ if has('nvim')
   lua package.loaded._copilot = nil
 endif
 
-function! s:AgentClose() dict abort
+function! s:VimClose() dict abort
   if !has_key(self, 'job')
     return
   endif
@@ -71,7 +71,7 @@ function! s:Send(agent, request) abort
   endtry
 endfunction
 
-function! s:AgentNotify(method, params) dict abort
+function! s:VimNotify(method, params) dict abort
   let request = {'method': a:method, 'params': a:params}
   if has_key(self, 'initialization_pending')
     call add(self.initialization_pending, request)
@@ -243,7 +243,7 @@ function! s:VimIsAttached(bufnr) dict abort
   return bufloaded(a:bufnr) && has_key(self.open_buffers, a:bufnr) ? v:true : v:false
 endfunction
 
-function! s:AgentRequest(method, params, ...) dict abort
+function! s:VimRequest(method, params, ...) dict abort
   let s:id += 1
   let params = deepcopy(a:params)
   let [_, progress] = s:PreprocessParams(self, params)
@@ -611,9 +611,9 @@ function! copilot#agent#New(...) abort
         \ 'progress': {},
         \ 'workspaceFolders': {},
         \ 'status': {'status': 'Starting', 'message': ''},
-        \ 'Close': function('s:AgentClose'),
-        \ 'Notify': function('s:AgentNotify'),
-        \ 'Request': function('s:AgentRequest'),
+        \ 'Close': function('s:VimClose'),
+        \ 'Notify': function('s:VimNotify'),
+        \ 'Request': function('s:VimRequest'),
         \ 'Attach': function('s:VimAttach'),
         \ 'IsAttached': function('s:VimIsAttached'),
         \ 'Call': function('s:AgentCall'),
