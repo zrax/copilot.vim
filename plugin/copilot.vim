@@ -7,7 +7,7 @@ scriptencoding utf-8
 
 command! -bang -nargs=? -range=-1 -complete=customlist,copilot#CommandComplete Copilot exe copilot#Command(<line1>, <count>, +"<range>", <bang>0, "<mods>", <q-args>)
 
-if v:version < 800 || !exists('##CompleteChanged')
+if v:version < 900 || !exists('##CompleteChanged')
   finish
 endif
 
